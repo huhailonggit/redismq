@@ -34,4 +34,9 @@ public class TestController {
     public List<MapRecord<String,Object,Object>> getStream(String key){
         return redisUtil.getAllStream(key);
     }
+
+    @GetMapping("/getStream1")
+    public void getStream1(String key){
+        redisUtil.getStream(key);
+    }
 }
