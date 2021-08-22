@@ -32,9 +32,25 @@ public class RedisStreamConfig {
                 .builder()
                 .pollTimeout(Duration.ofSeconds(1))
                 .build();
+
         var listenerContainer = StreamMessageListenerContainer.create(factory,options);
         var subscription = listenerContainer.receiveAutoAck(Consumer.from("mygroup","huhailong"),
                 StreamOffset.create("mystream", ReadOffset.lastConsumed()),streamListener);
+        listenerContainer.start();
+        return subscription;
+    }
+
+    @Bean
+    public Subscription subscription2(RedisConnectionFactory factory){
+        var options = StreamMessageListenerContainer
+                .StreamMessageListenerContainerOptions
+                .builder()
+                .pollTimeout(Duration.ofSeconds(1))
+                .build();
+
+        var listenerContainer = StreamMessageListenerContainer.create(factory,options);
+        var subscription = listenerContainer.receiveAutoAck(Consumer.from("mygroup","huhailong"),
+                StreamOffset.create("mystream2", ReadOffset.lastConsumed()),streamListener);
         listenerContainer.start();
         return subscription;
     }
