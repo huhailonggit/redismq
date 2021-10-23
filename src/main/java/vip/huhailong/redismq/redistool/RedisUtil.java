@@ -40,6 +40,10 @@ public class RedisUtil {
         return add;
     }
 
+    public void delField(String key, String fieldId){
+        redisTemplate.opsForStream().delete(key,fieldId);
+    }
+
     /**
      * 读取所有stream消息
      * @param key
