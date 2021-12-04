@@ -40,6 +40,10 @@ public class RedisUtil {
         return add;
     }
 
+    public void addGroup(String key, String groupName){
+        redisTemplate.opsForStream().createGroup(key,groupName);
+    }
+
     public void delField(String key, String fieldId){
         redisTemplate.opsForStream().delete(key,fieldId);
     }
