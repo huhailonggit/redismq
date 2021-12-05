@@ -3,10 +3,7 @@ package vip.huhailong.redismq.redistool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Range;
-import org.springframework.data.redis.connection.stream.MapRecord;
-import org.springframework.data.redis.connection.stream.RecordId;
-import org.springframework.data.redis.connection.stream.StreamOffset;
-import org.springframework.data.redis.connection.stream.StreamReadOptions;
+import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.stereotype.Component;
@@ -68,6 +65,20 @@ public class RedisUtil {
 
         List<MapRecord<String, Object, Object>> read = redisTemplate.opsForStream().read(StreamReadOptions.empty().block(Duration.ofMillis(1000*30)).count(2), StreamOffset.latest(key));
         System.out.println(read);
+    }
+
+    public void getStreamByGroup(String key, String groupName,String consumerName){
+        List<MapRecord<String, Object, Object>> read = redisTemplate.opsForStream().read(Consumer.from(groupName, consumerName), StreamReadOptions.empty(), StreamOffset.create(key,ReadOffset.lastConsumed()));
+        log.info("group read :{}",read);
+    }
+
+    public boolean hasKey(String key){
+        if(key==null){
+            return false;
+        }else{
+            return redisTemplate.hasKey(key);
+        }
+
     }
 
 }

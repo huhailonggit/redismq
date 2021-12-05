@@ -44,19 +44,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>it.sauronsoftware</groupId>
-			<artifactId>jave</artifactId>
-			<version>1.0.2</version>
-			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/main/resources/lib/jave-1.0.2.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.15</version>
-		</dependency>
 	</dependencies>
 
 	<build>

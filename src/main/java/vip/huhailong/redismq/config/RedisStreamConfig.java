@@ -64,12 +64,15 @@ public class RedisStreamConfig {
     }
 
     private void initStream(String key, String group){
-        Map<String,Object> map = new HashMap<>();
-        map.put("field","value");
-        RecordId recordId = redisUtil.addStream(key, map);
-        redisUtil.addGroup(key,group);
-        //将初始化的值删除掉
-        redisUtil.delField(key,recordId.getValue());
-        log.info("stream:{}-group:{} initialize success",key,group);
+        boolean hasKey = redisUtil.hasKey(key);
+        if(!hasKey){
+            Map<String,Object> map = new HashMap<>();
+            map.put("field","value");
+            RecordId recordId = redisUtil.addStream(key, map);
+            redisUtil.addGroup(key,group);
+            //将初始化的值删除掉
+            redisUtil.delField(key,recordId.getValue());
+            log.info("stream:{}-group:{} initialize success",key,group);
+        }
     }
 }

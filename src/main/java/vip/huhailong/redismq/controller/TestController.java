@@ -1,18 +1,10 @@
 package vip.huhailong.redismq.controller;
 
-import it.sauronsoftware.jave.Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.web.bind.annotation.*;
 import vip.huhailong.redismq.redistool.RedisUtil;
-import vip.huhailong.redismq.util.Image2Binary;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Map;
 
@@ -48,37 +40,8 @@ public class TestController {
         redisUtil.getStream(key);
     }
 
-    @GetMapping("/test2")
-    public void testVideo(String path) throws IOException {
-        File source = File.createTempFile("temp",".tmp");
-        System.out.println(source.getCanonicalPath());
-        Image2Binary.toBDFile(path,source.getCanonicalPath());
-        Encoder encoder = new Encoder();
-        FileChannel fc= null;
-        String size = "";
-        try {
-            it.sauronsoftware.jave.MultimediaInfo m = encoder.getInfo(source);
-            long ls = m.getDuration();
-            System.out.println("此视频时长为:"+(ls)/1000+"秒！");
-            //视频帧宽高
-            System.out.println("此视频高度为:"+m.getVideo().getSize().getHeight());
-            System.out.println("此视频宽度为:"+m.getVideo().getSize().getWidth());
-            System.out.println("此视频格式为:"+m.getFormat());
-            FileInputStream fis = new FileInputStream(source);
-            fc= fis.getChannel();
-            BigDecimal fileSize = new BigDecimal(fc.size());
-            size = fileSize.divide(new BigDecimal(1024), 0, RoundingMode.HALF_UP) + "KB";
-            System.out.println("此视频大小为"+size);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            if (null!=fc){
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    @GetMapping("/groupRead")
+    public void getStreamByGroup(String key, String groupName, String consumerName){
+        redisUtil.getStreamByGroup(key,groupName,consumerName);
     }
 }
