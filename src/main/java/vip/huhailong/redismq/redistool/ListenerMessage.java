@@ -24,6 +24,12 @@ public class ListenerMessage implements StreamListener<String, MapRecord<String,
         System.out.println("message id "+entries.getId().getValue());
         System.out.println("stream "+entries.getStream());
         System.out.println("body "+entries.getValue());
+        try{
+            //异常中断测试
+            System.out.println(1/0);
+        }catch (Exception e){
+            log.error("error message:{}",e.getMessage());
+        }
         redisUtil.delField("mystream",entries.getId().getValue());
     }
 
