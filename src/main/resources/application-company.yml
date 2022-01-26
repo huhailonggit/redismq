@@ -1,4 +1,0 @@
-spring:
-  redis:
-    host: 172.52.0.2
-    password: redis@tct_dev

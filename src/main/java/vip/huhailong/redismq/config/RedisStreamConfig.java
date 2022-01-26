@@ -3,6 +3,7 @@ package vip.huhailong.redismq.config;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -28,10 +29,19 @@ import java.util.Map;
 @Configuration
 public class RedisStreamConfig {
 
+    private final ListenerMessage streamListener;
+    private final RedisUtil redisUtil;
+
+    @Value("${redis-stream.names}")
+    private String[]redisStreamNames;
+    @Value("${redis-stream.groups}")
+    private String[]groups;
+
     @Autowired
-    private ListenerMessage streamListener;
-    @Autowired
-    RedisUtil redisUtil;
+    public RedisStreamConfig(RedisUtil redisUtil){
+        this.redisUtil = redisUtil;
+        this.streamListener = new ListenerMessage(redisUtil);
+    }
 
     @Bean
     public Subscription subscription(RedisConnectionFactory factory){
@@ -40,10 +50,10 @@ public class RedisStreamConfig {
                 .builder()
                 .pollTimeout(Duration.ofSeconds(1))
                 .build();
-        initStream("mystream","mygroup");
+        initStream(redisStreamNames[0],groups[0]);
         var listenerContainer = StreamMessageListenerContainer.create(factory,options);
-        var subscription = listenerContainer.receiveAutoAck(Consumer.from("mygroup","huhailong"),
-                StreamOffset.create("mystream", ReadOffset.lastConsumed()),streamListener);
+        var subscription = listenerContainer.receiveAutoAck(Consumer.from(groups[0],this.getClass().getName()),
+                StreamOffset.create(redisStreamNames[0], ReadOffset.lastConsumed()),streamListener);
         listenerContainer.start();
         return subscription;
     }
@@ -55,10 +65,10 @@ public class RedisStreamConfig {
                 .builder()
                 .pollTimeout(Duration.ofSeconds(1))
                 .build();
-        initStream("mystream2","mygroup");
+        initStream(redisStreamNames[1],groups[0]);
         var listenerContainer = StreamMessageListenerContainer.create(factory,options);
-        var subscription = listenerContainer.receiveAutoAck(Consumer.from("mygroup","huhailong"),
-                StreamOffset.create("mystream2", ReadOffset.lastConsumed()),streamListener);
+        var subscription = listenerContainer.receiveAutoAck(Consumer.from(groups[0],this.getClass().getName()),
+                StreamOffset.create(redisStreamNames[1], ReadOffset.lastConsumed()),streamListener);
         listenerContainer.start();
         return subscription;
     }
