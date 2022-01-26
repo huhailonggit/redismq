@@ -3,6 +3,9 @@ spring:
     host: 127.0.0.1
     password: redis@tct_dev
     port: 6379
+#stream 相关配置
 redis-stream:
+  #stream 名称数组
   names: mystream1,mystream2
+  #stream 群组名称
   groups: group1

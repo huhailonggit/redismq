@@ -17,7 +17,9 @@ import vip.huhailong.redismq.redistool.ListenerMessage;
 import vip.huhailong.redismq.redistool.RedisUtil;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,34 +46,24 @@ public class RedisStreamConfig {
     }
 
     @Bean
-    public Subscription subscription(RedisConnectionFactory factory){
+    public List<Subscription> subscription(RedisConnectionFactory factory){
+        List<Subscription> resultList = new ArrayList<>();
         var options = StreamMessageListenerContainer
                 .StreamMessageListenerContainerOptions
                 .builder()
                 .pollTimeout(Duration.ofSeconds(1))
                 .build();
-        initStream(redisStreamNames[0],groups[0]);
-        var listenerContainer = StreamMessageListenerContainer.create(factory,options);
-        var subscription = listenerContainer.receiveAutoAck(Consumer.from(groups[0],this.getClass().getName()),
-                StreamOffset.create(redisStreamNames[0], ReadOffset.lastConsumed()),streamListener);
-        listenerContainer.start();
-        return subscription;
+        for (String redisStreamName : redisStreamNames) {
+            initStream(redisStreamName,groups[0]);
+            var listenerContainer = StreamMessageListenerContainer.create(factory,options);
+            Subscription subscription = listenerContainer.receiveAutoAck(Consumer.from(groups[0], this.getClass().getName()),
+                    StreamOffset.create(redisStreamName, ReadOffset.lastConsumed()), streamListener);
+            resultList.add(subscription);
+            listenerContainer.start();
+        }
+        return resultList;
     }
 
-    @Bean
-    public Subscription subscription2(RedisConnectionFactory factory){
-        var options = StreamMessageListenerContainer
-                .StreamMessageListenerContainerOptions
-                .builder()
-                .pollTimeout(Duration.ofSeconds(1))
-                .build();
-        initStream(redisStreamNames[1],groups[0]);
-        var listenerContainer = StreamMessageListenerContainer.create(factory,options);
-        var subscription = listenerContainer.receiveAutoAck(Consumer.from(groups[0],this.getClass().getName()),
-                StreamOffset.create(redisStreamNames[1], ReadOffset.lastConsumed()),streamListener);
-        listenerContainer.start();
-        return subscription;
-    }
 
     private void initStream(String key, String group){
         boolean hasKey = redisUtil.hasKey(key);

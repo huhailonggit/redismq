@@ -9,4 +9,7 @@ __添加redis依赖__
 - JDK —— Version 1.8
 - Maven —— Version 3.6.3
 - SpringBoot —— Version 2.4.3
-> _2021-03-10 17:36_
+
+### 使用说明
+该项目为redis stream 作为消息队列的一个简单demo，大家可以根据自己需求进行修改，代码中主要的
+，运行该demo时只需要将application.yml中的配置信息改为自己的即可。
