@@ -62,7 +62,6 @@ public class RedisUtil {
     }
 
     public void getStream(String key){
-
         List<MapRecord<String, Object, Object>> read = redisTemplate.opsForStream().read(StreamReadOptions.empty().block(Duration.ofMillis(1000*30)).count(2), StreamOffset.latest(key));
         System.out.println(read);
     }
@@ -73,12 +72,8 @@ public class RedisUtil {
     }
 
     public boolean hasKey(String key){
-        if(key==null){
-            return false;
-        }else{
-            return redisTemplate.hasKey(key);
-        }
-
+        Boolean aBoolean = redisTemplate.hasKey(key);
+        return aBoolean==null?false:aBoolean;
     }
 
 }

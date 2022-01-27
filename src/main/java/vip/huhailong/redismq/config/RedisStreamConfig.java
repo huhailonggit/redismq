@@ -24,21 +24,24 @@ import java.util.Map;
 
 /**
  * @author Huhailong
- * @Description
+ * @Description 注入监听类
  * @Date 2021/3/12.
  */
 @Slf4j
 @Configuration
 public class RedisStreamConfig {
 
-    private final ListenerMessage streamListener;
-    private final RedisUtil redisUtil;
+    private final ListenerMessage streamListener;   //监听类
+    private final RedisUtil redisUtil;              //redis工具类
 
     @Value("${redis-stream.names}")
-    private String[]redisStreamNames;
+    private String[]redisStreamNames;               //redis stream 数组
     @Value("${redis-stream.groups}")
-    private String[]groups;
+    private String[]groups;                         //redis stream 群组数组
 
+    /**
+     * 注入工具类和监听类
+     */
     @Autowired
     public RedisStreamConfig(RedisUtil redisUtil){
         this.redisUtil = redisUtil;
