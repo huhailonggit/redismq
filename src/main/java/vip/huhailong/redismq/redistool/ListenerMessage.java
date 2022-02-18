@@ -21,7 +21,8 @@ public class ListenerMessage implements StreamListener<String, MapRecord<String,
     @Override
     public void onMessage(MapRecord<String, String, String> entries) {
         try{
-            log.info("stream name :{}, body:{}",entries.getStream(),entries.getValue());
+            //check用于验证key和对应消息是否一直
+            log.info("stream name :{}, body:{}, check:{}",entries.getStream(),entries.getValue(),(entries.getStream().equals(entries.getValue().get("name"))));
             redisUtil.delField(entries.getStream(),entries.getId().getValue());
         }catch (Exception e){
             log.error("error message:{}",e.getMessage());

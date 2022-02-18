@@ -54,10 +54,10 @@ public class TestController {
     public void moreAddTest(@PathVariable("count") Integer count){
         for(int i=0; i<count; i++){
             Map<String,Object> message1 = new HashMap<>();
-            message1.put("key1Count","key mystream1 message");
+            message1.put("name","mystream1");
             message1.put("send time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             Map<String,Object> message2 = new HashMap<>();
-            message2.put("key2Count","key mystream2 message");
+            message2.put("name","mystream2");
             message2.put("send time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             redisUtil.addStream(redisStreamNames[0],message1);
             redisUtil.addStream(redisStreamNames[1],message2);
