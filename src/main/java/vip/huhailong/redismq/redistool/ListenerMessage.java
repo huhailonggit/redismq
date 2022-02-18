@@ -21,10 +21,7 @@ public class ListenerMessage implements StreamListener<String, MapRecord<String,
     @Override
     public void onMessage(MapRecord<String, String, String> entries) {
         try{
-            log.info("接受到来自redis的消息");
-            System.out.println("message id "+entries.getId().getValue());
-            System.out.println("stream "+entries.getStream());
-            System.out.println("body "+entries.getValue());
+            log.info("stream name :{}, body:{}",entries.getStream(),entries.getValue());
             redisUtil.delField(entries.getStream(),entries.getId().getValue());
         }catch (Exception e){
             log.error("error message:{}",e.getMessage());

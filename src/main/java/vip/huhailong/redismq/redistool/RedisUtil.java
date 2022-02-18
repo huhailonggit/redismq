@@ -33,7 +33,7 @@ public class RedisUtil {
      */
     public RecordId addStream(String key, Map<String,Object> message){
         RecordId add = redisTemplate.opsForStream().add(key, message);
-        log.info("添加成功："+add);
+//        log.info("添加成功："+add);
         return add;
     }
 
