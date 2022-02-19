@@ -32,3 +32,38 @@ message id 1643249871795-0
 stream mystream2
 body {test=hello redismq, send time=2022-01-27 10:18:54}
 ~~~
+
+测试多多个key多接受能力借口
+
+~~~
+
+curl -X GET http://localhost:8080/test/moreTest/10  //后面多10可以更改
+
+~~~
+
+__注意：如果插入redis多数量很大，建议将插入放到集合后分批批量插入，例如100万条数据可以分为100次插入，每次1万条，这样可以减少I/O操作，加快速度__
+
+#### List分割方法
+
+~~~java
+public class ListUtil {
+
+    /**
+     * 集合分割工具类
+     * @param max 分割后集合最大数量
+     * @param list 要分割多集合
+     * @return 返回分割后多集合
+     */
+    public static List<List<String>> cutApart(int max, List<String> list){
+        List<List<String>> resultList = new ArrayList<>();
+        Stream.iterate(0, n->n+1).limit(countStep(list.size(), max)).forEach(i->{
+            resultList.add(list.stream().skip(i*max).limit(max).collect(Collectors.toList()));
+        });
+        return resultList;
+    }
+
+    private static Integer countStep(int size, int max){
+        return (size + max - 1) / max;
+    }
+}
+~~~
